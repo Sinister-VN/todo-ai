@@ -13,10 +13,10 @@ async function bootstrap() {
       transform: true,
       forbidNonWhitelisted: true,
       stopAtFirstError: true,
-    })
+    }),
   );
 
-  app.setGlobalPrefix("api/v1");
+  app.setGlobalPrefix('api/v1');
 
   app.enableCors({
     origin: configService.get<string>('FRONTEND_URL'),

@@ -1,10 +1,10 @@
 import Header from './components/Header';
-import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
 import { useEffect, useState } from 'react';
 import type { Todo, CreateTodoRequest, UpdateTodoRequest, TodoSuggestion } from './types/todo';
 import { todoService } from './services/todo.service';
 import AiPanel from './components/AiPanel';
+import './App.css';
 
 
 function App() {
@@ -121,24 +121,29 @@ function App() {
 
 
   return (
-    <div>
-      <Header title="Todo App" />
+    <main className="container">
+      <Header/>
 
-      <AiPanel 
+      <section className="card">
+        <AiPanel 
         onGenerate={handleGenerateSuggestions} 
         isGenerating={isGenerating} 
         suggestions={suggestions}
         onImportSelected={handleImportSelected} 
         isCreating={isCreating} />
+      </section>
 
-      <TodoInput onCreate={handleCreateTodo} isCreating={isCreating} />
-      <TodoList 
+      <section className="card">
+        <TodoList 
         todos={todos} 
         onUpdate={handleUpdateTodo} 
         onRemove={handleRemoveTodo} 
-        actionState={actionState} />
+        actionState={actionState} 
+        onCreate={handleCreateTodo} 
+        isCreating={isCreating} />  
+      </section>
 
-    </div>
+    </main>
   );
 }
 

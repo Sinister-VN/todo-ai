@@ -23,12 +23,14 @@ function TodoInput({ onCreate, isCreating }: TodoInputProps) {
   };
 
   return (
-    <div>
-      <input
-        type="text"
-        placeholder="Enter your todo..."
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
+    <tr>
+      <td>
+        <input
+          type="text"
+          style={{ width: "100%", border: "none", background: "transparent" }}
+          placeholder="Add new todo..."
+          value={todo}
+          onChange={(e) => setTodo(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             handleCreateTodo();
@@ -36,11 +38,14 @@ function TodoInput({ onCreate, isCreating }: TodoInputProps) {
         }}
         disabled={isCreating}
       />
+      </td>
+      <td></td>
+      <td>
       <button onClick={handleCreateTodo} disabled={isCreating}>
         {isCreating ? "Adding..." : "Add"}
       </button>
-    </div>
+      </td>
+    </tr>
   );
 }
-
 export default TodoInput;

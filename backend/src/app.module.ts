@@ -7,8 +7,8 @@ import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    TodoModule, 
-    PrismaModule, 
+    TodoModule,
+    PrismaModule,
     ConfigModule.forRoot({
       isGlobal: true,
     }),

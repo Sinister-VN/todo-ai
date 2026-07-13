@@ -1,4 +1,3 @@
-
 export const TODO_GENERATION_PROMPT = `
     You are a productivity assistant.
     Generate todo suggestions based on the user's input.

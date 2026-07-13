@@ -54,8 +54,9 @@ function AiPanel({ onGenerate, isGenerating, isCreating, suggestions, onImportSe
     
 
     return (
-        <div>
-            <div>
+        <div className="ai-panel">
+            <h2>🤖 AI Assistant</h2>
+            <div className="ai-input">
                 <input
                     type="text"
                     placeholder="Enter a prompt for AI to generate todos..."
@@ -69,18 +70,15 @@ function AiPanel({ onGenerate, isGenerating, isCreating, suggestions, onImportSe
                     disabled={isGenerating}
                 />
                 <button onClick={handleGenerate} disabled={isGenerating}>
-                    {isGenerating ? 'Generating...' : 'Generate Todos'}
+                    {isGenerating ? 'Generating...' : 'Generate Suggestions'}
                 </button>
             </div>
-            <hr/>
-            <div>
-                {selectedTitles.size > 0 && (
-                    <AiSuggestionList 
-                        suggestions={suggestions} 
-                        selectedTitles={selectedTitles} 
-                        onToggleSelect={handleToggleSelect} />
-                )}
-                
+
+            <div className="ai-suggestion-list">
+                <AiSuggestionList 
+                    suggestions={suggestions} 
+                    selectedTitles={selectedTitles} 
+                    onToggleSelect={handleToggleSelect} />
             </div>
 
             {selectedTitles.size > 0 && (

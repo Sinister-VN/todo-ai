@@ -5,6 +5,6 @@ import { AiService } from './ai.service';
 
 @Module({
   providers: [TodoService, AiService],
-  controllers: [TodoController]
+  controllers: [TodoController],
 })
 export class TodoModule {}
