@@ -21,4 +21,9 @@ export const todoService = {
     const res = await apiClient.delete(`/todos/${id}`);
     return res.data;
   },
+
+  async generate(prompt: string) {
+    const res = await apiClient.post('/todos/generate', { prompt });
+    return res.data;
+  },
 };

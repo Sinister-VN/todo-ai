@@ -15,4 +15,8 @@ export interface UpdateTodoRequest {
     completed?: boolean;
 }
 
-
+export interface TodoSuggestion {
+    title: string;
+    reason: string;
+    priority: number;
+}

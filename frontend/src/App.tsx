@@ -2,16 +2,21 @@ import Header from './components/Header';
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
 import { useEffect, useState } from 'react';
-import type { Todo, CreateTodoRequest, UpdateTodoRequest } from './types/todo';
+import type { Todo, CreateTodoRequest, UpdateTodoRequest, TodoSuggestion } from './types/todo';
 import { todoService } from './services/todo.service';
+import AiPanel from './components/AiPanel';
+
 
 function App() {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const [suggestions, setSuggestions] = useState<TodoSuggestion[]>([]);
+  const [isGenerating, setIsGenerating] = useState(false);
 
   const [actionState, setActionState] = useState<
     Record<number, 'updating' | 'removing' | null>
   >({});
+
 
   useEffect(() => {
     // Fetch todos from the backend when the component mounts
@@ -27,6 +32,7 @@ function App() {
     fetchTodos();
   }, []);
 
+
   const handleUpdateTodo = async (id: number, request: UpdateTodoRequest) => {
     try {
       setActionState((prev) => ({ ...prev, [id]: 'updating' }));
@@ -38,10 +44,10 @@ function App() {
           completed: updatedTodo.completed} : todo))
       );
     } catch (error) {
-      console.error(error);
-      throw error;
+        console.error(error);
+        throw error;
     } finally {
-      setActionState((prev) => ({ ...prev, [id]: null }));
+        setActionState((prev) => ({ ...prev, [id]: null }));
     }
   };
   
@@ -52,10 +58,10 @@ function App() {
       const newTodo = await todoService.create(request);
       setTodos((prevTodos) => [...prevTodos, newTodo]);
     } catch (error) {
-      console.error(error);
-      throw error;
+        console.error(error);
+        throw error;
     } finally {
-      setIsCreating(false);
+        setIsCreating(false);
     }
   };
 
@@ -66,20 +72,71 @@ function App() {
       await todoService.remove(id);
       setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
     } catch (error) {
-      console.error(error);
-      throw error;
+        console.error(error);
+        throw error;
     } finally {
-      setActionState((prev) => ({ ...prev, [id]: null }));
+        setActionState((prev) => ({ ...prev, [id]: null }));
     }
   };
+
+  const handleGenerateSuggestions = async (prompt: string) => {
+    try {
+      setIsGenerating(true);
+      const generatedTodos = await todoService.generate(prompt);
+      setSuggestions(generatedTodos);
+    } catch (error) {
+        console.error(error);
+    } finally {
+        setIsGenerating(false);
+    }
+  };
+  const handleImportSelected = async (
+        suggestions: TodoSuggestion[],
+    ) => {
+        setIsCreating(true);
+        try {
+          const createdTodos = await Promise.all(
+            suggestions.map((suggestion) =>
+              todoService.create({
+                title: suggestion.title,
+              }),
+            ),
+          );
+        
+          setTodos((prevTodos) => [...prevTodos, ...createdTodos]);
+          setSuggestions((prevSuggestions) =>
+            prevSuggestions.filter(
+              (suggestion) =>
+                !suggestions.some(
+                  (selected) => selected.title === suggestion.title,
+                ),
+            ),
+          );
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsCreating(false);
+        }
+    };
 
 
   return (
     <div>
       <Header title="Todo App" />
 
+      <AiPanel 
+        onGenerate={handleGenerateSuggestions} 
+        isGenerating={isGenerating} 
+        suggestions={suggestions}
+        onImportSelected={handleImportSelected} 
+        isCreating={isCreating} />
+
       <TodoInput onCreate={handleCreateTodo} isCreating={isCreating} />
-      <TodoList todos={todos} onUpdate={handleUpdateTodo} onRemove={handleRemoveTodo} actionState={actionState} />
+      <TodoList 
+        todos={todos} 
+        onUpdate={handleUpdateTodo} 
+        onRemove={handleRemoveTodo} 
+        actionState={actionState} />
 
     </div>
   );
