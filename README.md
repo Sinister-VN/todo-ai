@@ -13,13 +13,19 @@ The application supports standard CRUD operations for todos and integrates **Goo
 Frontend:
 
 ```
-https://your-frontend-url
+https://todo-ai-lilac.vercel.app
 ```
 
 Backend:
 
 ```
-https://your-backend-url
+https://todo-ai-bwbu.onrender.com/api/v1
+```
+
+Repository:
+
+```
+https://github.com/Sinister-VN/todo-ai
 ```
 
 ---
