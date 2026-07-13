@@ -1,17 +1,25 @@
 import { useState } from "react";
+import type { CreateTodoRequest } from "../types/todo";
 
 interface TodoInputProps {
-  onAddTodo: (todo: string) => void;
+  onCreate: (request: CreateTodoRequest) => Promise<void>;
+  isCreating: boolean;
 }
 
-function TodoInput({ onAddTodo }: TodoInputProps) {
+function TodoInput({ onCreate, isCreating }: TodoInputProps) {
   const [todo, setTodo] = useState("");
 
-  const handleAddTodo = () => {
+  const handleCreateTodo = async () => {
+    if (isCreating) return;
     if (!todo.trim()) return;
 
-    onAddTodo(todo);
-    setTodo("");
+    try {
+      await onCreate({ title: todo.trim() });
+
+      setTodo("");
+    } catch (error) {
+      console.error(error);
+    } 
   };
 
   return (
@@ -21,9 +29,15 @@ function TodoInput({ onAddTodo }: TodoInputProps) {
         placeholder="Enter your todo..."
         value={todo}
         onChange={(e) => setTodo(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleCreateTodo();
+          }
+        }}
+        disabled={isCreating}
       />
-      <button onClick={handleAddTodo}>
-        Add
+      <button onClick={handleCreateTodo} disabled={isCreating}>
+        {isCreating ? "Adding..." : "Add"}
       </button>
     </div>
   );
